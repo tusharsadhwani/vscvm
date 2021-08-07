@@ -1,8 +1,7 @@
 """VSCode version manager."""
-import argparse
-import bs4
 import urllib.request
 
+import bs4
 import click
 
 
