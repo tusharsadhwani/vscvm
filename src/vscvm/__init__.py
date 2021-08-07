@@ -1,10 +1,19 @@
 """VSCode version manager."""
+import argparse
 import bs4
 import urllib.request
 
+import click
 
+
+@click.group()
 def cli() -> None:
-    """CLI interface"""
+    """VSCode version manager"""
+
+
+@cli.command()
+def list() -> None:
+    """List all VSCode versions"""
     with urllib.request.urlopen("https://code.visualstudio.com/updates") as request:
         html = request.read()
 
