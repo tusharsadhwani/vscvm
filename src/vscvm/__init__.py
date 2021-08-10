@@ -16,7 +16,7 @@ class VSCodeVersionInfo(NamedTuple):
     month: str
 
 
-def get_vscode_versions(count: int = 5) -> List[VSCodeVersionInfo]:
+def get_vscode_versions() -> List[VSCodeVersionInfo]:
     versions: List[VSCodeVersionInfo] = []
     with urllib.request.urlopen("https://code.visualstudio.com/updates") as request:
         html = request.read()
@@ -44,9 +44,10 @@ def cli() -> None:
 
 
 @cli.command()
-def list() -> None:
+@click.option("--count", "-n", default=5, help="Number of versions to show")
+def list(count: int) -> None:
     """List all VSCode versions"""
-    for _, version, month in get_vscode_versions():
+    for _, version, month in get_vscode_versions()[:count]:
         print(f"{version} - {month}")
 
 
