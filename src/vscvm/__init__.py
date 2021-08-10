@@ -55,7 +55,7 @@ def list() -> None:
 def install(version: str) -> None:
     """Install a version of VSCode"""
     for url, version_num, month in get_vscode_versions():
-        if version != version_num:
+        if version != "latest" and version != version_num:
             continue
 
         with urllib.request.urlopen(url) as request:
