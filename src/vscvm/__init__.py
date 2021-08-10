@@ -80,6 +80,9 @@ def install(version: str) -> None:
                     f"{version_num}.tar.gz",
                 ]
             )
+            break
+    else:
+        print(f"No version found matching: {version}")
 
 
 def main() -> None:
