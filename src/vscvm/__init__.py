@@ -2,7 +2,7 @@
 import re
 import subprocess
 import urllib.request
-from typing import List, NamedTuple
+from typing import Any, List, NamedTuple
 
 import bs4
 import click
@@ -16,24 +16,29 @@ class VSCodeVersionInfo(NamedTuple):
     month: str
 
 
-def get_vscode_versions() -> List[VSCodeVersionInfo]:
-    versions: List[VSCodeVersionInfo] = []
+def get_vscode_version_links() -> Any:
     with urllib.request.urlopen("https://code.visualstudio.com/updates") as request:
         html = request.read()
 
         page = bs4.BeautifulSoup(html, "html.parser")
         vscode_version_links = page.select("#docs-navbar a")
-        for link in vscode_version_links:
-            url: str = link.get("href")
-            if url.startswith("/updates"):
-                url = "https://code.visualstudio.com" + url
+        return vscode_version_links
 
-            month = link.text
 
-            _, _, version = url.rpartition("/")
-            version = version.lstrip("v").replace("_", ".")
+def get_vscode_versions() -> List[VSCodeVersionInfo]:
+    versions: List[VSCodeVersionInfo] = []
 
-            versions.append(VSCodeVersionInfo(url, version, month))
+    for link in get_vscode_version_links():
+        url: str = link.get("href")
+        if url.startswith("/updates"):
+            url = "https://code.visualstudio.com" + url
+
+        month = link.text
+
+        _, _, version = url.rpartition("/")
+        version = version.lstrip("v").replace("_", ".")
+
+        versions.append(VSCodeVersionInfo(url, version, month))
 
     return versions
 
