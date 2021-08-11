@@ -26,6 +26,7 @@ def get_vscode_version_links() -> Any:
 
 
 def get_vscode_versions() -> List[VSCodeVersionInfo]:
+    """Gets the list of latest VSCode release versions"""
     versions: List[VSCodeVersionInfo] = []
 
     for link in get_vscode_version_links():
@@ -44,6 +45,7 @@ def get_vscode_versions() -> List[VSCodeVersionInfo]:
 
 
 def fetch_download_url(version_url: str) -> str:
+    """Gets the linux tar download link from a VSCode release webpage"""
     with urllib.request.urlopen(version_url) as request:
         html = request.read()
         page = bs4.BeautifulSoup(html, "html.parser")
@@ -58,6 +60,7 @@ def fetch_download_url(version_url: str) -> str:
 
 
 def fetch_direct_download_url(download_url: str) -> str:
+    """Fetches the direct download link from a redirecting URL"""
     process = subprocess.Popen(
         [
             "curl",
