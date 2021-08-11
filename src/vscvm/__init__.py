@@ -43,6 +43,36 @@ def get_vscode_versions() -> List[VSCodeVersionInfo]:
     return versions
 
 
+def fetch_download_url(version_url: str) -> str:
+    with urllib.request.urlopen(version_url) as request:
+        html = request.read()
+        page = bs4.BeautifulSoup(html, "html.parser")
+        description = page.select(".body")[0]
+
+        download_regex = re.compile("Downloads: Windows:")
+        links = description.find(text=download_regex).parent
+
+        linux_link = links.find("a", text="tarball")
+        download_url = linux_link["href"]
+        return download_url
+
+
+def fetch_direct_download_url(download_url: str) -> str:
+    process = subprocess.Popen(
+        [
+            "curl",
+            "-ILs",
+            "-o/dev/null",
+            "-w %{url_effective}",
+            download_url,
+        ],
+        stdout=subprocess.PIPE,
+    )
+    assert process.stdout is not None
+    direct_download_url = process.stdout.read().decode().strip()
+    return direct_download_url
+
+
 @click.group()
 def cli() -> None:
     """VSCode version manager"""
@@ -66,43 +96,22 @@ def install(version: str) -> None:
         if version != "latest" and version != version_num:
             continue
 
-        with urllib.request.urlopen(url) as request:
-            html = request.read()
-            page = bs4.BeautifulSoup(html, "html.parser")
-            description = page.select(".body")[0]
+        print(f"Downloading v{version_num} - {month}...")
 
-            download_regex = re.compile("Downloads: Windows:")
-            links = description.find(text=download_regex).parent
+        download_url = fetch_download_url(url)
+        direct_download_url = fetch_direct_download_url(download_url)
+        subprocess.call(
+            [
+                "curl",
+                "-L",
+                "--progress-bar",
+                direct_download_url,
+                "-o",
+                f"code-{version_num}.tar.gz",
+            ]
+        )
+        break
 
-            linux_link = links.find("a", text="tarball")
-            download_url = linux_link["href"]
-
-            print(f"Downloading v{version_num} - {month}...")
-
-            process = subprocess.Popen(
-                [
-                    "curl",
-                    "-ILs",
-                    "-o/dev/null",
-                    "-w %{url_effective}",
-                    download_url,
-                ],
-                stdout=subprocess.PIPE,
-            )
-            assert process.stdout is not None
-            direct_download_url = process.stdout.read().decode().strip()
-
-            subprocess.call(
-                [
-                    "curl",
-                    "-L",
-                    "--progress-bar",
-                    direct_download_url,
-                    "-o",
-                    f"code-{version_num}.tar.gz",
-                ]
-            )
-            break
     else:
         print(f"No version found matching: {version}")
 
