@@ -56,10 +56,15 @@ def fetch_download_url(version_url: str) -> str:
         description = page.select(".body")[0]
 
         download_regex = re.compile("Downloads: Windows:")
-        links = description.find(text=download_regex).parent
+        paragraph = description.find(text=download_regex)
+        assert paragraph is not None
 
+        links = paragraph.parent
+        assert links is not None
         linux_link = links.find("a", text="tarball")
-        download_url = linux_link["href"]
+        assert isinstance(linux_link, bs4.element.Tag)
+
+        download_url = linux_link.attrs["href"]
         return download_url
 
 
