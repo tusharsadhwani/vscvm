@@ -48,13 +48,15 @@ def cli() -> None:
 def list(count: int) -> None:
     """List all VSCode versions"""
     for _, version, month in get_vscode_versions()[:count]:
-        print(f"{version} - {month}")
+        print(f"v{version} - {month}")
 
 
 @cli.command()
 @click.argument("version")
 def install(version: str) -> None:
     """Install a version of VSCode"""
+    version = version.lstrip("v")
+
     for url, version_num, month in get_vscode_versions():
         if version != "latest" and version != version_num:
             continue
