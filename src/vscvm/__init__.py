@@ -23,7 +23,7 @@ def get_vscode_versions() -> List[VSCodeVersionInfo]:
 
         page = bs4.BeautifulSoup(html, "html.parser")
         vscode_version_links = page.select("#docs-navbar a")
-        for link in vscode_version_links[:5]:
+        for link in vscode_version_links:
             url: str = link.get("href")
             if url.startswith("/updates"):
                 url = "https://code.visualstudio.com" + url
