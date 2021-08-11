@@ -8,6 +8,10 @@ import bs4
 import click
 
 
+VSCODE_BASE_URL = "https://code.visualstudio.com"
+VSCODE_RELEASES_URL = VSCODE_BASE_URL + "/updates"
+
+
 class VSCodeVersionInfo(NamedTuple):
     """Holds the version number and release month of a VSCode release"""
 
@@ -17,7 +21,7 @@ class VSCodeVersionInfo(NamedTuple):
 
 
 def get_vscode_version_links() -> Any:
-    with urllib.request.urlopen("https://code.visualstudio.com/updates") as request:
+    with urllib.request.urlopen(VSCODE_RELEASES_URL) as request:
         html = request.read()
 
         page = bs4.BeautifulSoup(html, "html.parser")
@@ -31,8 +35,8 @@ def get_vscode_versions() -> List[VSCodeVersionInfo]:
 
     for link in get_vscode_version_links():
         url: str = link.get("href")
-        if url.startswith("/updates"):
-            url = "https://code.visualstudio.com" + url
+        if not url.startswith(VSCODE_BASE_URL):
+            url = VSCODE_BASE_URL + url
 
         month = link.text
 

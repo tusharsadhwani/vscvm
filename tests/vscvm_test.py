@@ -11,7 +11,7 @@ def test_updates_url() -> None:
     assert len(links) != 0
 
 
-def test_list(capsys: CaptureFixture[str]) -> None:
+def test_list() -> None:
     """Tests if vscode versions can properly be fetched"""
     versions = vscvm.get_vscode_versions()
     assert len(versions) != 0
