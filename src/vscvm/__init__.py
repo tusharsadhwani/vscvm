@@ -73,14 +73,28 @@ def install(version: str) -> None:
             download_url = linux_link["href"]
 
             print(f"Downloading v{version_num} - {month}...")
+
+            process = subprocess.Popen(
+                [
+                    "curl",
+                    "-ILs",
+                    "-o/dev/null",
+                    "-w %{url_effective}",
+                    download_url,
+                ],
+                stdout=subprocess.PIPE,
+            )
+            assert process.stdout is not None
+            direct_download_url = process.stdout.read().decode().strip()
+
             subprocess.call(
                 [
                     "curl",
                     "-L",
                     "--progress-bar",
-                    download_url,
+                    direct_download_url,
                     "-o",
-                    f"{version_num}.tar.gz",
+                    f"code-{version_num}.tar.gz",
                 ]
             )
             break
