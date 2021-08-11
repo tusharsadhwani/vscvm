@@ -12,7 +12,7 @@ v1.57 - May 2021
 v1.56 - April 2021
 v1.55 - March 2021
 
-$ vsc list -n=3
+$ vsc list -n 3
 v1.59 - July 2021
 v1.58 - June 2021
 v1.57 - May 2021
