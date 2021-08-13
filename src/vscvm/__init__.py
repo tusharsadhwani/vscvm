@@ -125,9 +125,9 @@ def install_vscode(filepath: str, version: str) -> None:
     )
 
     code_script_path = os.path.join(vscvm_path, "code")
-    code_binary_path = os.path.join(version_path, "code")
+    code_binary_path = os.path.join(version_path, "bin/code")
     with open(code_script_path, "w") as file:
-        file.write(code_binary_path)
+        file.write(f"{code_binary_path} $@")
 
     os.chmod(code_script_path, 0o755)
 
