@@ -87,11 +87,12 @@ def fetch_direct_download_url(download_url: str) -> str:
 
 
 def download_vscode(url: str, version: str) -> str:
-    """Downloads the vscode url and returns the filename"""
+    """Downloads the vscode url and returns the download path"""
     download_url = fetch_download_url(url)
     direct_download_url = fetch_direct_download_url(download_url)
 
     filename = f"code-{version}.tar.gz"
+    filepath = os.path.join("/tmp", filename)
     subprocess.call(
         [
             "curl",
@@ -99,13 +100,13 @@ def download_vscode(url: str, version: str) -> str:
             "--progress-bar",
             direct_download_url,
             "-o",
-            filename,
+            filepath,
         ]
     )
-    return filename
+    return filepath
 
 
-def install_vscode(filename: str, version: str) -> None:
+def install_vscode(filepath: str, version: str) -> None:
     vscvm_path = os.path.expanduser("~/.vscvm")
     version_path = os.path.join(vscvm_path, version)
     if not os.path.exists(version_path):
@@ -116,7 +117,7 @@ def install_vscode(filename: str, version: str) -> None:
             "tar",
             "--strip-components=1",
             "-xzf",
-            filename,
+            filepath,
             "-C",
             version_path,
         ]
@@ -147,8 +148,8 @@ def install(version: str) -> None:
             continue
 
         print(f"Downloading v{version_num} - {month}...")
-        filename = download_vscode(url, version_num)
-        install_vscode(filename, version)
+        filepath = download_vscode(url, version_num)
+        install_vscode(filepath, version)
         break
 
     else:
