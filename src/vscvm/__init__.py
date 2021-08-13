@@ -149,7 +149,7 @@ def install(version: str) -> None:
 
         print(f"Downloading v{version_num} - {month}...")
         filepath = download_vscode(url, version_num)
-        install_vscode(filepath, version)
+        install_vscode(filepath, version_num)
         break
 
     else:
