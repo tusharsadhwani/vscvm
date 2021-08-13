@@ -2,6 +2,22 @@
 
 A VSCode version manager.
 
+## Install
+
+Add the following to your `.bashrc` file:
+
+Install `vsc` via pip:
+
+```console
+pip install vscvm
+```
+
+```bash
+export PATH=$HOME/.vscvm:$PATH
+```
+
+and that's it!
+
 ## Usage
 
 ```console
