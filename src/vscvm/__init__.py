@@ -1,4 +1,5 @@
 """VSCode version manager."""
+import os
 import os.path
 import re
 import subprocess
@@ -123,6 +124,13 @@ def install_vscode(filepath: str, version: str) -> None:
         ]
     )
 
+    code_script_path = os.path.join(vscvm_path, "code")
+    code_binary_path = os.path.join(version_path, "code")
+    with open(code_script_path, "w") as file:
+        file.write(code_binary_path)
+
+    os.chmod(code_script_path, 0o755)
+
 
 @click.group()
 def cli() -> None:
@@ -150,6 +158,7 @@ def install(version: str) -> None:
         print(f"Downloading v{version_num} - {month}...")
         filepath = download_vscode(url, version_num)
         install_vscode(filepath, version_num)
+        print(f"Successfully Installed v{version_num}!")
         break
 
     else:
