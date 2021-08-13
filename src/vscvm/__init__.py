@@ -1,4 +1,5 @@
 """VSCode version manager."""
+import os.path
 import re
 import subprocess
 import urllib.request
@@ -85,6 +86,43 @@ def fetch_direct_download_url(download_url: str) -> str:
     return direct_download_url
 
 
+def download_vscode(url: str, version: str) -> str:
+    """Downloads the vscode url and returns the filename"""
+    download_url = fetch_download_url(url)
+    direct_download_url = fetch_direct_download_url(download_url)
+
+    filename = f"code-{version}.tar.gz"
+    subprocess.call(
+        [
+            "curl",
+            "-L",
+            "--progress-bar",
+            direct_download_url,
+            "-o",
+            filename,
+        ]
+    )
+    return filename
+
+
+def install_vscode(filename: str, version: str) -> None:
+    vscvm_path = os.path.expanduser("~/.vscvm")
+    version_path = os.path.join(vscvm_path, version)
+    if not os.path.exists(version_path):
+        os.mkdir(version_path)
+
+    subprocess.call(
+        [
+            "tar",
+            "--strip-components=1",
+            "-xzf",
+            filename,
+            "-C",
+            version_path,
+        ]
+    )
+
+
 @click.group()
 def cli() -> None:
     """VSCode version manager"""
@@ -109,19 +147,8 @@ def install(version: str) -> None:
             continue
 
         print(f"Downloading v{version_num} - {month}...")
-
-        download_url = fetch_download_url(url)
-        direct_download_url = fetch_direct_download_url(download_url)
-        subprocess.call(
-            [
-                "curl",
-                "-L",
-                "--progress-bar",
-                direct_download_url,
-                "-o",
-                f"code-{version_num}.tar.gz",
-            ]
-        )
+        filename = download_vscode(url, version_num)
+        install_vscode(filename, version)
         break
 
     else:
