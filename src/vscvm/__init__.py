@@ -110,7 +110,7 @@ def install_vscode(filepath: str, version: str) -> None:
     vscvm_path = os.path.expanduser("~/.vscvm")
     version_path = os.path.join(vscvm_path, version)
     if not os.path.exists(version_path):
-        os.mkdir(version_path)
+        os.makedirs(version_path)
 
     subprocess.call(
         [
