@@ -9,6 +9,7 @@ from typing import Any, List, NamedTuple
 import bs4
 import click
 
+VSCVM_PATH = os.path.expanduser("~/.vscvm")
 
 VSCODE_BASE_URL = "https://code.visualstudio.com"
 VSCODE_RELEASES_URL = VSCODE_BASE_URL + "/updates"
@@ -110,6 +111,20 @@ def fetch_direct_download_url(download_url: str) -> str:
     return direct_download_url
 
 
+def setup_vscode_version(url: str, version_num: str) -> bool:
+    """Downloads and extracts the given vscode version"""
+    version_path = os.path.join(VSCVM_PATH, version_num)
+
+    is_cached = os.path.isdir(version_path) and os.listdir(version_path)
+    if is_cached:
+        # Directory exists and is not empty. Assume it's already downloaded.
+        return True
+
+    filepath = download_vscode(url, version_num)
+    extract_vscode(filepath, version_path)
+    return False
+
+
 def download_vscode(url: str, version: str) -> str:
     """Downloads the vscode url and returns the download path"""
     download_url = fetch_download_url(url)
@@ -130,9 +145,9 @@ def download_vscode(url: str, version: str) -> str:
     return filepath
 
 
-def install_vscode(filepath: str, version: str) -> None:
-    vscvm_path = os.path.expanduser("~/.vscvm")
-    version_path = os.path.join(vscvm_path, version)
+def extract_vscode(filepath: str, version: str) -> None:
+    """Extracts the downloaded vscode zipfile in the appropriate folder"""
+    version_path = os.path.join(VSCVM_PATH, version)
     if not os.path.exists(version_path):
         os.makedirs(version_path)
 
@@ -147,8 +162,12 @@ def install_vscode(filepath: str, version: str) -> None:
         ]
     )
 
-    # Add the script that runs the correct vscode to PATH
-    code_script_path = os.path.join(vscvm_path, "code")
+
+def install_vscode(version: str) -> None:
+    """Adds the vscode runner script and .desktop file"""
+    version_path = os.path.join(VSCVM_PATH, version)
+
+    code_script_path = os.path.join(VSCVM_PATH, "code")
     code_binary_path = os.path.join(version_path, "bin/code")
     with open(code_script_path, "w") as file:
         file.write(f"{code_binary_path} $@")
@@ -191,8 +210,11 @@ def install(version: str) -> None:
             continue
 
         print(f"Downloading v{version_num} - {month}...")
-        filepath = download_vscode(url, version_num)
-        install_vscode(filepath, version_num)
+        is_cached = setup_vscode_version(url, version_num)
+        if is_cached:
+            print(f"Using cached v{version_num}...")
+
+        install_vscode(version_num)
         print(f"Successfully Installed v{version_num}!")
         break
 
