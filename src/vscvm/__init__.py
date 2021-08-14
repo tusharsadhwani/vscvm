@@ -5,7 +5,7 @@ import re
 import shutil
 import subprocess
 import urllib.request
-from typing import Any, List, NamedTuple, Set
+from typing import Any, List, NamedTuple, Optional, Set
 
 import bs4
 import click
@@ -199,6 +199,25 @@ def get_installed_versions() -> Set[str]:
     return installed_versions
 
 
+def get_active_version() -> Optional[str]:
+    """Returns currently active vscode version, or None"""
+    script_file_path = os.path.join(VSCVM_PATH, "code")
+    if not os.path.isfile(script_file_path):
+        return None
+
+    with open(script_file_path) as script_file:
+        script_data = script_file.read()
+
+    script_regex = re.compile(r"/home/.+/\.vscvm/(\d+\.\d+)")
+    match = script_regex.match(script_data)
+
+    if match is None:
+        return None
+
+    (version,) = match.groups()
+    return version
+
+
 @click.group()
 def cli() -> None:
     """VSCode version manager"""
@@ -207,15 +226,25 @@ def cli() -> None:
 @cli.command()
 @click.option("--count", "-n", default=5, help="Number of versions to show")
 @click.option("--installed", is_flag=True, help="Only show installed versions")
-def list(count: int, installed: bool) -> None:
+@click.option("--active", is_flag=True, help="Only show currently active version")
+def list(count: int, installed: bool, active: bool) -> None:
     """List all VSCode versions"""
+    active_version = get_active_version()
     installed_versions = get_installed_versions()
     for _, version, month in get_vscode_versions()[:count]:
-        if version in installed_versions:
+        if version == active_version:
+            status = "[Active]"
+
+        elif version in installed_versions:
+            # If --active flag was passed, don't print this one
+            if active:
+                continue
+
             status = "[Installed]"
+
         else:
-            # If --installed flag was passed, don't print this one
-            if installed:
+            # If installed or active flag was passed, don't print this one
+            if active or installed:
                 continue
 
             status = ""
