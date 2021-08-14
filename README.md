@@ -42,9 +42,20 @@ $ code --version
 
   ```console
   $ vsc list -n 3
-  v1.59 - July 2021
-  v1.58 - June 2021
+  v1.59 - July 2021      [Active]
+  v1.58 - June 2021      [Installed]
   v1.57 - May 2021
+  ```
+
+  ```console
+  $ vsc list --installed
+  v1.59 - July 2021      [Active]
+  v1.58 - June 2021      [Installed]
+  ```
+
+  ```console
+  $ vsc list --active
+  v1.59 - July 2021      [Active]
   ```
 
 - `install`:
@@ -62,6 +73,20 @@ $ code --version
   ```console
   $ vsc install 1.42
   Downloading v1.42 - January 2020...
+  ```
+
+- `uninstall`:
+
+  ```console
+  $ vsc list --active
+  v1.59 - July 2021      [Active]
+  $ vsc uninstall
+  Uninstalled v1.59.
+  ```
+
+  ```console
+  $ vsc uninstall 1.56
+  Uninstalled v1.56.
   ```
 
 ## Troubleshooting
