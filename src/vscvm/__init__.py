@@ -112,7 +112,7 @@ def fetch_direct_download_url(download_url: str) -> str:
 
 
 def setup_vscode_version(url: str, version_num: str) -> bool:
-    """Downloads and extracts the given vscode version"""
+    """Downloads and extracts the given VSCode version"""
     version_path = os.path.join(VSCVM_PATH, version_num)
 
     is_cached = os.path.isdir(version_path) and os.listdir(version_path)
@@ -126,7 +126,7 @@ def setup_vscode_version(url: str, version_num: str) -> bool:
 
 
 def download_vscode(url: str, version: str) -> str:
-    """Downloads the vscode url and returns the download path"""
+    """Downloads the VSCode url and returns the download path"""
     download_url = fetch_download_url(url)
     direct_download_url = fetch_direct_download_url(download_url)
 
@@ -146,7 +146,7 @@ def download_vscode(url: str, version: str) -> str:
 
 
 def extract_vscode(filepath: str, version: str) -> None:
-    """Extracts the downloaded vscode zipfile in the appropriate folder"""
+    """Extracts the downloaded VSCode zipfile in the appropriate folder"""
     version_path = os.path.join(VSCVM_PATH, version)
     if not os.path.exists(version_path):
         os.makedirs(version_path)
@@ -164,7 +164,7 @@ def extract_vscode(filepath: str, version: str) -> None:
 
 
 def install_vscode(version: str) -> None:
-    """Adds the vscode runner script and .desktop file"""
+    """Adds the VSCode runner script and .desktop file"""
     version_path = os.path.join(VSCVM_PATH, version)
 
     code_script_path = os.path.join(VSCVM_PATH, "code")
