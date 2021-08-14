@@ -164,18 +164,6 @@ def extract_vscode(filepath: str, version: str) -> None:
     )
 
 
-def get_installed_versions() -> Set[str]:
-    """Returns all vscode versions installed on the system"""
-    installed_versions: Set[str] = set()
-
-    version_regex = re.compile(r"\d+\.\d+")
-    for folder in os.listdir(VSCVM_PATH):
-        if version_regex.match(folder):
-            installed_versions.add(folder)
-
-    return installed_versions
-
-
 def install_vscode(version: str) -> None:
     """Adds the VSCode runner script and .desktop file"""
     version_path = os.path.join(VSCVM_PATH, version)
@@ -197,6 +185,18 @@ def install_vscode(version: str) -> None:
     icon_file_path = os.path.join(icon_folder_path, "code.desktop")
     with open(icon_file_path, "w") as icon_file:
         icon_file.write(icon_data)
+
+
+def get_installed_versions() -> Set[str]:
+    """Returns all vscode versions installed on the system"""
+    installed_versions: Set[str] = set()
+
+    version_regex = re.compile(r"\d+\.\d+")
+    for folder in os.listdir(VSCVM_PATH):
+        if version_regex.match(folder):
+            installed_versions.add(folder)
+
+    return installed_versions
 
 
 @click.group()
