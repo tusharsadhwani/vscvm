@@ -13,6 +13,29 @@ import click
 VSCODE_BASE_URL = "https://code.visualstudio.com"
 VSCODE_RELEASES_URL = VSCODE_BASE_URL + "/updates"
 
+VSCODE_DESKTOP_DATA = """\
+[Desktop Entry]
+Name=Visual Studio Code
+Comment=Code Editing. Redefined.
+GenericName=Text Editor
+Exec={path} --unity-launch %F
+Icon={icon_path}
+Type=Application
+StartupNotify=false
+StartupWMClass=Code
+Categories=Utility;TextEditor;Development;IDE;
+MimeType=text/plain;inode/directory;application/x-code-workspace;
+Actions=new-empty-window;
+Keywords=vscode;
+
+X-Desktop-File-Install-Version=0.26
+
+[Desktop Action new-empty-window]
+Name=New Empty Window
+Exec={path} --new-window %F
+Icon={icon_path}
+"""
+
 
 class VSCodeVersionInfo(NamedTuple):
     """Holds the version number and release month of a VSCode release"""
@@ -124,12 +147,24 @@ def install_vscode(filepath: str, version: str) -> None:
         ]
     )
 
+    # Add the script that runs the correct vscode to PATH
     code_script_path = os.path.join(vscvm_path, "code")
     code_binary_path = os.path.join(version_path, "bin/code")
     with open(code_script_path, "w") as file:
         file.write(f"{code_binary_path} $@")
 
     os.chmod(code_script_path, 0o755)
+
+    # Add Desktop Icon metadata
+    icon_folder_path = os.path.expanduser("~/.local/share/applications")
+    if not os.path.exists(icon_folder_path):
+        os.makedirs(icon_folder_path)
+
+    icon_path = os.path.join(version_path, "resources/app/resources/linux/code.png")
+    icon_data = VSCODE_DESKTOP_DATA.format(path=code_binary_path, icon_path=icon_path)
+    icon_file_path = os.path.join(icon_folder_path, "code.desktop")
+    with open(icon_file_path, "w") as icon_file:
+        icon_file.write(icon_data)
 
 
 @click.group()
