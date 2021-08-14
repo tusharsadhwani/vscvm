@@ -63,3 +63,18 @@ $ code --version
   $ vsc install 1.42
   Downloading v1.42 - January 2020...
   ```
+
+## Troubleshooting
+
+- `vsc: command not found`
+
+  If you installed `vscvm` via pip, but the terminal says vsc is not a recognized command,
+  that means that you probably don't have `~/.local/bin` in your `PATH`.
+
+  Add the following line into your `.bashrc` file:
+
+  ```bash
+  PATH=$PATH:$HOME/.local/bin
+  ```
+
+  then restart your terminal, and it should start working.
