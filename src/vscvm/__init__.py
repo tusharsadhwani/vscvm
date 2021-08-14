@@ -276,16 +276,36 @@ def install(version: str) -> None:
 
 
 @cli.command()
-@click.argument("version")
+@click.argument("version", default="")
 def uninstall(version: str) -> None:
     """Uninstall a VSCode versions"""
     version = version.lstrip("v")
+
+    if version == "":
+        active_version = get_active_version()
+        if active_version is None:
+            print("No active VSCode version found. Aborting.")
+            return
+
+        version = active_version
+
+    version = version.lstrip("v")
     version_path = os.path.join(VSCVM_PATH, version)
     if not os.path.exists(version_path):
-        print(f"v{version} does not exist in installed versions.")
+        print(f"{version} does not exist in installed versions.")
         return
 
     shutil.rmtree(version_path)
+
+    active_version = get_active_version()
+    if version == active_version:
+        script_file_path = os.path.join(VSCVM_PATH, "code")
+        os.remove(script_file_path)
+
+        launcher_file = os.path.expanduser("~/.local/share/applications/code.desktop")
+        if os.path.exists(launcher_file):
+            os.remove(launcher_file)
+
     print(f"Uninstalled v{version}.")
 
 
