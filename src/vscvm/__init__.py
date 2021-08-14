@@ -5,7 +5,7 @@ import re
 import shutil
 import subprocess
 import urllib.request
-from typing import Any, List, NamedTuple
+from typing import Any, List, NamedTuple, Set
 
 import bs4
 import click
@@ -164,6 +164,18 @@ def extract_vscode(filepath: str, version: str) -> None:
     )
 
 
+def get_installed_versions() -> Set[str]:
+    """Returns all vscode versions installed on the system"""
+    installed_versions: Set[str] = set()
+
+    version_regex = re.compile(r"\d+\.\d+")
+    for folder in os.listdir(VSCVM_PATH):
+        if version_regex.match(folder):
+            installed_versions.add(folder)
+
+    return installed_versions
+
+
 def install_vscode(version: str) -> None:
     """Adds the VSCode runner script and .desktop file"""
     version_path = os.path.join(VSCVM_PATH, version)
@@ -194,10 +206,21 @@ def cli() -> None:
 
 @cli.command()
 @click.option("--count", "-n", default=5, help="Number of versions to show")
-def list(count: int) -> None:
+@click.option("--installed", is_flag=True, help="Only show installed versions")
+def list(count: int, installed: bool) -> None:
     """List all VSCode versions"""
+    installed_versions = get_installed_versions()
     for _, version, month in get_vscode_versions()[:count]:
-        print(f"v{version} - {month}")
+        if version in installed_versions:
+            status = "[Installed]"
+        else:
+            # If --installed flag was passed, don't print this one
+            if installed:
+                continue
+
+            status = ""
+
+        print(f"v{version:5} - {month:14} {status}")
 
 
 @cli.command()
