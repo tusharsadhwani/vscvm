@@ -2,6 +2,7 @@
 import os
 import os.path
 import re
+import shutil
 import subprocess
 import urllib.request
 from typing import Any, List, NamedTuple
@@ -220,6 +221,20 @@ def install(version: str) -> None:
 
     else:
         print(f"No version found matching: {version}")
+
+
+@cli.command()
+@click.argument("version")
+def uninstall(version: str) -> None:
+    """Uninstall a VSCode versions"""
+    version = version.lstrip("v")
+    version_path = os.path.join(VSCVM_PATH, version)
+    if not os.path.exists(version_path):
+        print(f"v{version} does not exist in installed versions.")
+        return
+
+    shutil.rmtree(version_path)
+    print(f"Uninstalled v{version}.")
 
 
 def main() -> None:
