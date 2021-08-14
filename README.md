@@ -28,15 +28,38 @@ v1.57 - May 2021
 v1.56 - April 2021
 v1.55 - March 2021
 
-$ vsc list -n 3
-v1.59 - July 2021
-v1.58 - June 2021
-v1.57 - May 2021
-
 $ vsc install latest
-Downloading 1.59...
-Successfully installed 1.59!
+Downloading v1.59 - July 2021...
+Successfully installed v1.59!
 
 $ code --version
 1.59.0
 ```
+
+## Commands
+
+- `list`:
+
+  ```console
+  $ vsc list -n 3
+  v1.59 - July 2021
+  v1.58 - June 2021
+  v1.57 - May 2021
+  ```
+
+- `install`:
+
+  ```console
+  $ vsc install latest
+  Downloading v1.59 - July 2021...
+  ```
+
+  ```console
+  $ vsc install v1.57
+  Downloading v1.57 - May 2021...
+  ```
+
+  ```console
+  $ vsc install 1.42
+  Downloading v1.42 - January 2020...
+  ```
