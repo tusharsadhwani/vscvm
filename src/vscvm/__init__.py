@@ -309,6 +309,26 @@ def uninstall(version: str) -> None:
     print(f"Uninstalled v{version}.")
 
 
+def check_update() -> None:
+    """Check for updates at startup"""
+    if os.path.exists("/tmp/vscvm_check_update"):
+        return
+
+    try:
+        with open("/tmp/vscvm_check_update", "w"):
+            pass
+
+        vscode_versions = get_vscode_versions()
+        latest_version = vscode_versions[0].version
+        installed_versions = get_installed_versions()
+        if all(version < latest_version for version in installed_versions):
+            print(f"A new version of VSCode is available: v{latest_version}")
+            print(f"Run 'vsc install latest' to install it.")
+
+    except:
+        pass
+
+
 def main() -> None:
     """Main function"""
     cli()
