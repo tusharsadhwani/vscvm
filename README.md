@@ -14,6 +14,7 @@ Add the following to your `.bashrc` file:
 
 ```bash
 export PATH=$HOME/.vscvm:$PATH
+vscvm_check_update
 ```
 
 and that's it!
