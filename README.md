@@ -21,6 +21,14 @@ fi
 
 and that's it!
 
+### Update checks
+
+If you don't want an update check to run periodically, you only need to add this one line to your `.bashrc`:
+
+```bash
+export PATH=$HOME/.vscvm:$PATH
+```
+
 ## Usage
 
 ```console
