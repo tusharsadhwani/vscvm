@@ -315,9 +315,10 @@ def check_update() -> None:
         return
 
     try:
-        with open("/tmp/vscvm_check_update", "w"):
-            pass
+        # Create a temp file as an indication that we have run the update check
+        open("/tmp/vscvm_check_update", "w").close()
 
+        print("vscvm is checking for updates, please wait...")
         vscode_versions = get_vscode_versions()
         latest_version = vscode_versions[0].version
         installed_versions = get_installed_versions()
