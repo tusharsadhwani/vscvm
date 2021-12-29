@@ -100,6 +100,19 @@ $ code --version
   Uninstalled v1.56.
   ```
 
+- `cleanup`:
+
+  ```console
+  $ vsc list -n3
+  v1.59 - July 2021      [Active]
+  v1.58 - June 2021      [Installed]
+  v1.57 - May 2021       [Installed]
+
+  $ vsc cleanup
+  Uninstalled v1.58.
+  Uninstalled v1.57.
+  ```
+
 ## Troubleshooting
 
 - `vsc: command not found`

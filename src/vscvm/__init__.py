@@ -278,11 +278,11 @@ def install(version: str) -> None:
 @cli.command()
 @click.argument("version", default="")
 def uninstall(version: str) -> None:
+    """Uninstall a VSCode version"""
     _uninstall(version)
 
 
 def _uninstall(version: str) -> None:
-    """Uninstall a VSCode versions"""
     version = version.lstrip("v")
 
     if version == "":
