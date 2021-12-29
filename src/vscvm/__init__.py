@@ -278,6 +278,10 @@ def install(version: str) -> None:
 @cli.command()
 @click.argument("version", default="")
 def uninstall(version: str) -> None:
+    _uninstall(version)
+
+
+def _uninstall(version: str) -> None:
     """Uninstall a VSCode versions"""
     version = version.lstrip("v")
 
@@ -307,6 +311,19 @@ def uninstall(version: str) -> None:
             os.remove(launcher_file)
 
     print(f"Uninstalled v{version}.")
+
+
+@cli.command()
+def cleanup() -> None:
+    """Cleans up older, unused versions of vscode"""
+    active_version = get_active_version()
+    installed_versions = get_installed_versions()
+
+    for version in installed_versions:
+        if version == active_version:
+            continue
+
+        _uninstall(version)
 
 
 def check_update() -> None:
