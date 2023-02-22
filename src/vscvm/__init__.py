@@ -189,6 +189,9 @@ def install_vscode(version: str) -> None:
 
 def get_installed_versions() -> Set[str]:
     """Returns all vscode versions installed on the system"""
+    if not os.path.exists(VSCVM_PATH):
+        return set()
+
     installed_versions: Set[str] = set()
 
     version_regex = re.compile(r"\d+\.\d+")
@@ -251,6 +254,7 @@ def list(count: int, installed: bool, active: bool) -> None:
 
         print(f"v{version:5} - {month:14} {status}")
 
+    _check_vscvm_in_path()
 
 @cli.command()
 @click.argument("version")
@@ -274,6 +278,7 @@ def install(version: str) -> None:
     else:
         print(f"No version found matching: {version}")
 
+    _check_vscvm_in_path()
 
 @cli.command()
 @click.argument("version", default="")
@@ -345,6 +350,18 @@ def check_update() -> None:
 
     except:
         pass
+
+
+def _check_vscvm_in_path() -> None:
+    """If ~/.vscvm is not in $PATH, prints a yellow warning."""
+    paths = set(os.environ["PATH"].split(os.pathsep))
+    if VSCVM_PATH not in paths:
+        message = (
+            "Warning: The '~/.vscvm' folder was not found in $PATH, so the "
+            "installed VSCode instances won't be accessible by the `code` "
+            "command. Consider adding this folder to $PATH."
+        )
+        print(f"\033[33m{message}\033[m")
 
 
 def main() -> None:
